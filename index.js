@@ -1,45 +1,14 @@
 const express = require('express');
-const https = require('https');
 require('dotenv').config();
 
-const options = {
-    hostname: 'api.spoonacular.com',
-    path: `/food/ingredients/autocomplete?apiKey=${process.env.API_KEY}&query=chick&number=7`,
-    method: 'GET'
-}
 
-const req = https.request(options, res => {
-    console.log(`statusCode: ${res.statusCode}`)
-
-    res.on('data', d => {
-        process.stdout.write(d)
-    })
-})
-
-req.on('error', error => {
-    console.error(error)
-});
-
-req.end()
-
-
-// const path = require('path');
-// const cookieParser = require('cookie-parser');
-// const logger = require('morgan');
-// const createError = require('http-errors');
-// require('dotenv').config();
-
-// const userRoutes = require('./routes/users');
-// const shiftRoutes = require('./routes/shifts');
-// const groupRoutes = require('./routes/groups');
-// const hospitalRoutes = require('./routes/hospitals');
-
-// const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 // const config = require('config'); // taken from rz
 // const cors = require('cors'); // taken from rz, not sure what it does
 
 // const authorization = require('./middleware/authorization');
+
+const autocompleteIngredientSearchRoutes = require('./routes/autocompleteIngredientSearch');
 
 const app = express();
 
@@ -57,15 +26,10 @@ mongoose.connect('mongodb://localhost:27017/whattocook', { useNewUrlParser: true
 app.use(express.urlencoded({ extended: true }))
 
 app.get("/", (req, res) => {
-
-
     res.send("HI WELCOME TO what to cook");
 })
 
-// app.use('/users', userRoutes);
-// app.use('/shifts', shiftRoutes);
-// app.use('/groups', groupRoutes);
-// app.use('/hospitals', hospitalRoutes);
+app.use('/autocompleteIngredientSearch', autocompleteIngredientSearchRoutes);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
