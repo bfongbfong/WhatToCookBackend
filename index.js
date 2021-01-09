@@ -1,4 +1,28 @@
 const express = require('express');
+const https = require('https');
+require('dotenv').config();
+
+const options = {
+    hostname: 'api.spoonacular.com',
+    path: `/food/ingredients/autocomplete?apiKey=${process.env.API_KEY}&query=chick&number=7`,
+    method: 'GET'
+}
+
+const req = https.request(options, res => {
+    console.log(`statusCode: ${res.statusCode}`)
+
+    res.on('data', d => {
+        process.stdout.write(d)
+    })
+})
+
+req.on('error', error => {
+    console.error(error)
+});
+
+req.end()
+
+
 // const path = require('path');
 // const cookieParser = require('cookie-parser');
 // const logger = require('morgan');
@@ -33,6 +57,8 @@ mongoose.connect('mongodb://localhost:27017/whattocook', { useNewUrlParser: true
 app.use(express.urlencoded({ extended: true }))
 
 app.get("/", (req, res) => {
+
+
     res.send("HI WELCOME TO what to cook");
 })
 
